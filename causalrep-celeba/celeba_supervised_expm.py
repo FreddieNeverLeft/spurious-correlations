@@ -217,14 +217,14 @@ for restart in range(flags.n_restarts):
 
     envs = [
         {
-            'images': (train_data.float()).cuda(),
-            'labels': torch.from_numpy(np.array(train_y_df['noisy_target']))[:, None].float().cuda(),
-            'spurious_target': torch.from_numpy(np.array(train_y_df['spurious']))[:, None].cuda()
+            'images': (train_data.float()),
+            'labels': torch.from_numpy(np.array(train_y_df['noisy_target']))[:, None].float(),
+            'spurious_target': torch.from_numpy(np.array(train_y_df['spurious']))[:, None]
         },
         {
-            'images': (test_data.float()).cuda(),
-            'labels': torch.from_numpy(np.array(test_y_df['noisy_target']))[:, None].float().cuda(),
-            'spurious_target': torch.from_numpy(np.array(test_y_df['spurious']))[:, None].cuda()
+            'images': (test_data.float()),
+            'labels': torch.from_numpy(np.array(test_y_df['noisy_target']))[:, None].float(),
+            'spurious_target': torch.from_numpy(np.array(test_y_df['spurious']))[:, None]
         }
     ]
 
@@ -251,7 +251,7 @@ for restart in range(flags.n_restarts):
             # _tvaez maps the VAE latent to one-dimensional outcome
             # for classification
             self._tvaez = nn.Sequential(lin4, nn.ReLU(True), lin5, nn.ReLU(True))
-            # self.betas = torch.zeros([self.num_features+1, 1]).cuda()
+            # self.betas = torch.zeros([self.num_features+1, 1])
             self.finallayer = nn.Linear(flags.num_features + 1, 1)
 
         def forward(self, input, vaez):
@@ -325,7 +325,7 @@ for restart in range(flags.n_restarts):
         nn.init.zeros_(layer.bias)
 
 
-    baselinemlp = baselineMLP().cuda()
+    baselinemlp = baselineMLP()
     optimizer_baselinenll = optim.Adam(baselinemlp.parameters(), lr=flags.lr, weight_decay=1e-3)
 
     # baseline
@@ -367,7 +367,7 @@ for restart in range(flags.n_restarts):
     # build model
     vae = VAE(x_dim=flags.input_dim, h_dim1=flags.hidden_dim, h_dim2=flags.hidden_dim, z_dim=flags.z_dim)
     if torch.cuda.is_available():
-        vae.cuda()
+        vae
 
     optimizer_vae = optim.Adam(vae.parameters())
 
@@ -383,7 +383,7 @@ for restart in range(flags.n_restarts):
 
     # baselinevae (use vae features only)
 
-    baselinevaemlp = baselinevaeMLP().cuda()
+    baselinevaemlp = baselinevaeMLP()
     optimizer_baselinevaenll = optim.Adam(baselinevaemlp.parameters(), lr=flags.lr, weight_decay=1e-3)
 
     for step in range(flags.steps):
@@ -416,8 +416,8 @@ for restart in range(flags.n_restarts):
 
     # causal_REP
 
-    mlp = MLP().cuda()
-    net = Net().cuda()  # final classification net
+    mlp = MLP()
+    net = Net()  # final classification net
 
     optimizer_net = optim.Adam(net.parameters(), lr=flags.lr, weight_decay=flags.l2_reg)
 
@@ -453,7 +453,7 @@ for restart in range(flags.n_restarts):
             X = mlp._tvaez(env['vaez']) - mlp._tvaez(env['vaez']).mean()
             beta = [torch.matmul(
                 torch.matmul(
-                    torch.inverse(1e-8 * torch.eye(X.shape[1]).cuda() +
+                    torch.inverse(1e-8 * torch.eye(X.shape[1]) +
                                   torch.matmul(
                                       torch.transpose(X, 0, 1),
                                       X)),
@@ -462,9 +462,9 @@ for restart in range(flags.n_restarts):
             r2s = torch.Tensor([1 - (((X * (beta[j])).T[0] - y[:, j]) ** 2).sum() / (y[:, j] ** 2 + 1e-8).sum() for j in
                                 range(y.shape[1])]).mean()
 
-            env['featureZr2'] = r2s.cuda()
+            env['featureZr2'] = r2s
 
-            weight_norm = torch.tensor(0.).cuda()
+            weight_norm = torch.tensor(0.)
             for w in mlp.parameters():
                 weight_norm += w.norm().pow(2)
 

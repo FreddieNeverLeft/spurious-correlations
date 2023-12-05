@@ -54,7 +54,7 @@ def train_vae(vae, train_loader, optimizer_vae, epoch):
     vae.train()
     train_loss = 0
     for batch_idx, data in enumerate(train_loader):
-        data = data.cuda()
+        data = data
         optimizer_vae.zero_grad()
         
         recon_batch, mu, log_var = vae(data)
@@ -73,7 +73,7 @@ def test_vae(vae, test_loader):
     test_loss= 0
     with torch.no_grad():
         for data in test_loader:
-                data = data.cuda()
+                data = data
                 recon, mu, log_var = vae(data)
                 
                 # sum up batch loss
