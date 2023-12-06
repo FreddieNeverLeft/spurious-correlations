@@ -178,7 +178,7 @@ for restart in range(flags.n_restarts):
                                                                                                         full_labels_df[
                                                                                                             'true_target'])))
         data = pd.concat([full_labels_df[(full_labels_df['true_target'] == counts['true_target'][j]) & (
-                    full_labels_df['spurious'] == counts['spurious'][j])].sample(counts[0][j], replace=True) for j in
+                    full_labels_df['spurious'] == counts['spurious'][j])].sample(counts['count'][j], replace=True) for j in
                           range(counts.shape[0])]).drop_duplicates(subset=["index"])
         return data
 
