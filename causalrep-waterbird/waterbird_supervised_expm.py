@@ -347,10 +347,10 @@ def main():
 
         # fit VAE
 
-        # train_loader = torch.utils.data.DataLoader(dataset=envs[0]['images'].view(-1, flags.input_dim),
-        #                                            batch_size=flags.batch_size, shuffle=False)
-        # test_loader = torch.utils.data.DataLoader(dataset=envs[1]['images'].view(-1, flags.input_dim),
-        #                                           batch_size=flags.batch_size, shuffle=False)
+        train_loader = torch.utils.data.DataLoader(dataset=envs[0]['images'].view(-1, flags.input_dim),
+                                                   batch_size=flags.batch_size, shuffle=False)
+        test_loader = torch.utils.data.DataLoader(dataset=envs[1]['images'].view(-1, flags.input_dim),
+                                                  batch_size=flags.batch_size, shuffle=False)
 
         # build model
         vae = VAE(x_dim=flags.input_dim, h_dim1=flags.hidden_dim, h_dim2=flags.hidden_dim, z_dim=flags.z_dim)
@@ -552,7 +552,7 @@ def main():
             if e.errno != errno.EEXIST:
                 raise
 
-    outfile = out_dir + '/supervised_celebA' + str(int(time.time() * 1e6)) + '.csv'
+    outfile = out_dir + '/supervised_waterbird' + str(int(time.time() * 1e6)) + '.csv'
 
     result = pd.DataFrame({
         'causalrep_train_accs': np.array(final_train_accs),
