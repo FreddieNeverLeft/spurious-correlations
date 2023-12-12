@@ -227,6 +227,7 @@ for restart in range(flags.n_restarts):
             'spurious_target': torch.from_numpy(np.array(test_y_df['spurious']))[:, None]
         }
     ]
+    # print("envs[0]['images'].shape", envs[0]['images'].shape)
 
 
     class MLP(nn.Module):
